@@ -4,7 +4,7 @@ foreach ($job in Get-VBRComputerBackupJob) {
     $options.GenerationPolicy.EnableRechek = $true
     $options.GenerationPolicy.RecheckScheduleKind = 'Monthly'
     $options.GenerationPolicy.RecheckDays = "Sunday"
-    Set-VBRJobOptions -Job $job -Options $options | Out-Null
+    Set-VBRJobOptions -Job $job -Options $options
 }
 
 
@@ -14,5 +14,5 @@ foreach ($job in Get-VBRJob) {
     $options.GenerationPolicy.EnableRechek = $true
     $options.GenerationPolicy.RecheckScheduleKind = 'Monthly'
     $options.GenerationPolicy.RecheckDays = "Sunday"
-    Set-VBRJobOptions -Job $job -Options $options | Out-Null
+    Set-VBRJobOptions -Job $job -Options $options
 }
