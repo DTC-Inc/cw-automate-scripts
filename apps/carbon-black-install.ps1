@@ -13,7 +13,7 @@ if ($msiUrl -ne '@msiUrl@') {
     msiexec /i $ltSvcDir'\packages\carbon-black.msi' /qn COMPANY_CODE=$companyCode HIDE_COMMAND_LINES=1
 
 } else {
-    msiexec /i $msiPath /qn COMPANY_CODE=$companyCode HIDE_COMMAND_LINES=1
+    msiexec /i '$msiPath' /qn COMPANY_CODE='$companyCode' HIDE_COMMAND_LINES=1
 }
 
 Stop-Transcript
