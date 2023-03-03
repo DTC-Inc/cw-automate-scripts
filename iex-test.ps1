@@ -1,0 +1,4 @@
+$Output
+
+Write-Output $Output
+
