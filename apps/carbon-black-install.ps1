@@ -1,19 +1,21 @@
-Start-Transcript -Path $ltSvcDir\carbon-black-install.log
-Write-Output $msiPath
+Start-Transcript -Path $ltSvcDir'\'$packageFileName'.log'
+$packageFileName = $packageName -Replace "\s", "-"
 # Check if Carbon Black is installed.
-$installed = Get-Package | Where {$_.Name -like "*Carbon Black*"}
+$installed = Get-Package | Where {$_.Name -like "*$packageName*"}
 if ($installed) {
-    exit
+    Write-Ouput "$packageName already installed. Exiting"
+    exit  
 }
 
 # Check if URL or MSI Path is set then run installer.
 if ($msiUrl -ne '@msiUrl@') {
-
-    Invoke-WebRequest -Uri $msiUrl -OutFile $ltSvcDir'\packages\carbon-black.msi'
-    msiexec /i $ltSvcDir'\packages\carbon-black.msi' /qn COMPANY_CODE=$companyCode HIDE_COMMAND_LINES=1
+    Write-Output "msiUrl variable has data. We're going to download the msi and execute."
+    Invoke-WebRequest -Uri $msiUrl -OutFile $ltSvcDir'\packages\$packageFileName.msi'
+    msiexec /i $ltSvcDir'\packages\$packageFileName.msi ' + $msiArguments 
 
 } else {
-    msiexec /i '$msiPath' /qn COMPANY_CODE='$companyCode' HIDE_COMMAND_LINES=1
+    Write-Output "msiUrl is blank. Launching msi from msiPath."
+    msiexec /i $msiPath + ' ' + $msiArugments
 }
 
 Stop-Transcript
