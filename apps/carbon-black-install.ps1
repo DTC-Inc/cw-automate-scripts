@@ -3,7 +3,7 @@ $msiUrl = '@msiUrl@'
 $msiPath = '@msiPath@'
 $companyCode = '@companyCode@'
 $argumentList = '/qn ' +  $companyCode + ' HIDE_COMMAND_LINES=1'
-$ltSvcPath = %ltsvcdir%
+$ltSvcPath = '%ltsvcdir%'
 
 Start-Transcript -Path $ltSvcPath\carbon-black-install.log
 
