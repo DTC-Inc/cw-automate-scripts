@@ -16,3 +16,5 @@ if ($msiUrl) {
 } else {
     msiexec /i '$msiPath' /qn COMPANY_CODE=$companyCode HIDE_COMMAND_LINES=1
 }
+
+Stop-Transcript
