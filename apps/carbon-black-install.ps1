@@ -1,5 +1,5 @@
 Start-Transcript -Path $ltSvcDir\carbon-black-install.log
-
+Write-Output $msiPath
 # Check if Carbon Black is installed.
 $installed = Get-Package | Where {$_.Name -like "*Carbon Black*"}
 if ($installed) {
