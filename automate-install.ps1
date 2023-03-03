@@ -1,7 +1,37 @@
 #Set information needed for deploying automate agent
 $Server = '@server@'
 $Token = '@token@'
-$LocationId = '%locaitonid%'
+$LocationId = '%locationid%'
+
+# Sets password for account running script
+$password = Covnerto-SecureString '@password@' -AsPlainText -Force
+
+# Detect interactive script or not.
+if ($Server -eq '@server@') {
+    $server = Read-Host "Input CW Automate Server hostname" | Out-String
+}
+
+if ($token -eq '@token@') {
+    $token = Read-Host "Input CW Automate intall token" | Out-String
+}
+
+if ($locationId -eq '%locationid%') {
+    $locationid = Read-Host "Input CW Automate location id" | Out-String
+}
+
+# Script block
+$scriptBlock = {
+            param($server,$token,$locationid)
+            $serviceName = Get-Service | Where {$_.Name -eq 'LTService'} | Select -ExpandProperty Name
+            if ($serviceName) { 
+                exit
+            } else {
+                [Net.ServicePointManager]::SecurityProtocol = [Enum]::ToObject([Net.SecurityProtocolType], 3072);
+                Invoke-Expression (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Get-Nerdio/NMM/main/scripted-actions/modules/CMSP_Automate-Module.psm1');
+                Install-Automate -Server $server -LocationID $token -Token $locationid -Transcript
+            }
+        }
+
 
 # Set the time range to query
 $today = Get-Date
@@ -10,8 +40,15 @@ $last30days = $today.AddDays(-30)
 # Query Active Directory for computers that have checked in within the last 30 days
 $computers = Get-ADComputer -Filter {LastLogonTimeStamp -gt $last30days} -Properties LastLogonTimeStamp
 
-#Prompts for domain credentials to access computer
-$credentials = Get-Credential
+#Prompts for domain credentials to access computer if credentials are predefined
+if ($password -eq '@password@') {
+    $credential = New-Object System.Management.Automation.PSCredential ('@username@',$password)
+
+} else {
+  $credentials = Get-Credential
+
+}
+
 
 $computers | ForEach-Object -Parallel {
     $computerName = $_.Name
@@ -20,15 +57,16 @@ $computers | ForEach-Object -Parallel {
         # Define the commands to run on the remote computer
         # Run the commands on the remote computer
         Invoke-Command -ComputerName $computername -Credential $using:credentials -ScriptBlock {
+            param($server,$token,$locationid)
             $serviceName = Get-Service | Where {$_.Name -eq 'LTService'} | Select -ExpandProperty Name
             if ($serviceName) { 
                 exit
             } else {
                 [Net.ServicePointManager]::SecurityProtocol = [Enum]::ToObject([Net.SecurityProtocolType], 3072);
                 Invoke-Expression (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Get-Nerdio/NMM/main/scripted-actions/modules/CMSP_Automate-Module.psm1');
-                Install-Automate -Server $using:server -LocationID $using:locationID -Token $using:token -Transcript
+                Install-Automate -Server $server -LocationID $token -Token $locationid -Transcript
             }
-        }
+        } -ArgumentList $using:server,$using:token,$using:locationid
     } else {
         #Will display results in powershell window
         Write-Output "Could not connect to $computername"
