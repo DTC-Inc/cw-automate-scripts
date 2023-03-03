@@ -1,9 +1,3 @@
-# Set the MSI path. Please only use one of these.
-$msiUrl = '@msiUrl@'
-$msiPath = '@msiPath@'
-$companyCode = '@companyCode@'
-$argumentList = '/qn ' +  $companyCode + ' HIDE_COMMAND_LINES=1'
-
 Start-Transcript -Path $ltSvcDir\carbon-black-install.log
 
 # Check if Carbon Black is installed.
