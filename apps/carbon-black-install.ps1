@@ -10,7 +10,7 @@ if ($installed) {
 }
 
 # Check if URL or MSI Path is set then run installer.
-if ($msiUrl -ne '@msiUrl@') {
+if ($msiUrl) {
     Write-Output "msiUrl variable has data. We're going to download the msi and execute."
     Invoke-WebRequest -Uri $msiUrl -OutFile '$ltSvcDir\packages\$packageFileName.msi'
     Start-Process msiexec.exe -ArgumentList $msiFlag 
