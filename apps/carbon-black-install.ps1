@@ -7,6 +7,12 @@ $ltSvcPath = '%ltsvcdir%'
 
 Start-Transcript -Path $ltSvcPath\carbon-black-install.log
 
+# Check if Carbon Black is installed.
+$installed = Get-Package | Where {$_.Name -like "*Carbon Black*"}
+if ($installed) {
+    exit
+}
+
 # Check if URL or MSI Path is set then run installer.
 if ($msiUrl -ne '@msiUrl@') {
 
