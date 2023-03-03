@@ -13,7 +13,7 @@ if ($installed) {
 if ($msiUrl -ne '@msiUrl@') {
     Write-Output "msiUrl variable has data. We're going to download the msi and execute."
     Invoke-WebRequest -Uri $msiUrl -OutFile '$ltSvcDir\packages\$packageFileName.msi'
-    msiexec /i '$ltSvcDir\packages\$packageFileName.msi ' + $msiArguments 
+    Start-Process msiexec.exe -ArgumentList $msiFlag 
 
 } else {
     Write-Output "msiUrl is blank. Launching msi from msiPath."
