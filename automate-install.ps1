@@ -1,37 +1,17 @@
-#Set information needed for deploying automate agent
-$Server = '@server@'
-$Token = '@token@'
-$LocationId = '%locationid%'
-
-# Sets password for account running script
-$password = Covnerto-SecureString '@password@' -AsPlainText -Force
+Start-Transcript 
 
 # Detect interactive script or not.
-if ($Server -eq '@server@') {
+if ($Server -eq $null) {
     $server = Read-Host "Input CW Automate Server hostname" | Out-String
 }
 
-if ($token -eq '@token@') {
+if ($token -eq $null) {
     $token = Read-Host "Input CW Automate intall token" | Out-String
 }
 
-if ($locationId -eq '%locationid%') {
+if ($locationId -eq $null) {
     $locationid = Read-Host "Input CW Automate location id" | Out-String
 }
-
-# Script block
-$scriptBlock = {
-            param($server,$token,$locationid)
-            $serviceName = Get-Service | Where {$_.Name -eq 'LTService'} | Select -ExpandProperty Name
-            if ($serviceName) { 
-                exit
-            } else {
-                [Net.ServicePointManager]::SecurityProtocol = [Enum]::ToObject([Net.SecurityProtocolType], 3072);
-                Invoke-Expression (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Get-Nerdio/NMM/main/scripted-actions/modules/CMSP_Automate-Module.psm1');
-                Install-Automate -Server $server -LocationID $token -Token $locationid -Transcript
-            }
-        }
-
 
 # Set the time range to query
 $today = Get-Date
@@ -41,8 +21,8 @@ $last30days = $today.AddDays(-30)
 $computers = Get-ADComputer -Filter {LastLogonTimeStamp -gt $last30days} -Properties LastLogonTimeStamp
 
 #Prompts for domain credentials to access computer if credentials are predefined
-if ($password -eq '@password@') {
-    $credential = New-Object System.Management.Automation.PSCredential ('@username@',$password)
+if ($password) {
+    $credentials = New-Object System.Management.Automation.PSCredential ($username,$password)
 
 } else {
   $credentials = Get-Credential
