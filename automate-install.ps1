@@ -32,13 +32,14 @@ if ($password) {
 
 $computers | ForEach-Object -Parallel {
     $computerName = $_.Name
+    Write-Output "Running on " + $computername + "."
     $ping = Test-Connection -Count 1 -ComputerName $computerName -Quiet
     if ($ping) {
         # Define the commands to run on the remote computer
         # Run the commands on the remote computer
         Invoke-Command -ComputerName $computername -Credential $using:credentials -ScriptBlock {
             param($server,$token,$locationid)
-	    Write-Output "Running on " + $computername + "."
+
             $serviceName = Get-Service | Where {$_.Name -eq 'LTService'} | Select -ExpandProperty Name
             if ($serviceName) { 
                 exit
