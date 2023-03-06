@@ -32,7 +32,7 @@ if ($password) {
 
 $computers | ForEach-Object -Parallel {
     $computerName = $_.Name
-    Write-Output "Running on " + $computername + "."
+    Write-Output "Running on $computername."
     $ping = Test-Connection -Count 1 -ComputerName $computerName -Quiet
     if ($ping) {
         # Define the commands to run on the remote computer
