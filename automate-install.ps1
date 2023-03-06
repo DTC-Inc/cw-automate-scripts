@@ -38,6 +38,7 @@ $computers | ForEach-Object -Parallel {
         # Run the commands on the remote computer
         Invoke-Command -ComputerName $computername -Credential $using:credentials -ScriptBlock {
             param($server,$token,$locationid)
+	    Write-Output "Running on " + $computername + "."
             $serviceName = Get-Service | Where {$_.Name -eq 'LTService'} | Select -ExpandProperty Name
             if ($serviceName) { 
                 exit
