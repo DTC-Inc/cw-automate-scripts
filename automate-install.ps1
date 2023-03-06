@@ -44,7 +44,7 @@ $computers | ForEach-Object -Parallel {
             } else {
                 [Net.ServicePointManager]::SecurityProtocol = [Enum]::ToObject([Net.SecurityProtocolType], 3072);
                 Invoke-Expression (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Get-Nerdio/NMM/main/scripted-actions/modules/CMSP_Automate-Module.psm1');
-                Install-Automate -Server $server -LocationID $locationid -Token $token -Transcript
+                Install-Automate -Server $server -LocationID '$locationid' -Token $token -Transcript
             }
         } -ArgumentList $using:server,$using:token,$using:locationid
     } else {
