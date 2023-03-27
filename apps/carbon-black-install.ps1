@@ -8,13 +8,12 @@ if ($installed) {
     Write-Output "$packageName already installed. Exiting"
     exit  
 }
-Write-Output $msiUrl
-$msiUrl = $null
+
 # Check if URL or MSI Path is set then run installer.
 if ($msiUrl) {
     Write-Output "msiUrl variable has data. We're going to download the msi and execute."
     Invoke-WebRequest -Uri $msiUrl -OutFile '$ltSvcDir\packages\$packageFileName.msi'
-    Start-Process msiexec.exe -ArgumentList $msiFlag 
+    Start-Process msiexec.exe -ArgumentList "/i $ltSvcDir\packages\$packageFileName.msi $msiFlag"
 
 } else {
     Write-Output "msiUrl is blank. Launching msi from msiPath."
