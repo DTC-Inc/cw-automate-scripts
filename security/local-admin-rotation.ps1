@@ -1,12 +1,12 @@
 # VARIABLE SET IN LT EXECUTE SCRIPT BLOCK
 # Define the local administrator username
-# $localAdmin = "@myLocalAdmin@" 
+ $localAdmin = '@myLocalAdmin@'
 
 # Define the log file path
-# $logFilePath = "%ltsvcdir%\logs\local-admin-rotate.log"
+ $logFilePath = '%ltsvcdir%\logs\local-admin-rotate.log'
 
 # Define new password
-# $newPassword = "%randompassword%"
+ $newPassword = '%randompassword%'
 
 # Create the log file directory if it doesn't exist
 $LogDirectory = Split-Path $LogFilePath
