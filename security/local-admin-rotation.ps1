@@ -22,34 +22,44 @@ if (!(Test-Path -Path $LogFilePath)) {
 Start-Transcript -Path $LogFilePath
 
 try {
-    # Check if the local administrator account already exists
-    $existingAccount = Get-LocalUser -Name $LocalAdmin -ErrorAction SilentlyContinue
+    # Check if the current machine is a domain controller
+    $isDomainController = (Get-WmiObject -Query "Select DomainRole from Win32_ComputerSystem").DomainRole -eq 4
 
-    if ($existingAccount -eq $null) {
-        # If the account doesn't exist, create a new one with a random password
-        New-LocalUser -Name $LocalAdmin -Password (ConvertTo-SecureString -AsPlainText $newPassword -Force) -PasswordNeverExpires:$true
-        Write-Host "Local administrator account '$LocalAdmin' created with password: $newPassword"
+    if (!$isDomainController) {
+        # If not a domain controller, proceed with local administrator account creation
+
+        # Check if the local administrator account already exists
+        $existingAccount = Get-LocalUser -Name $LocalAdmin -ErrorAction SilentlyContinue
+
+        if ($existingAccount -eq $null) {
+            # If the account doesn't exist, create a new one with a random password
+            New-LocalUser -Name $LocalAdmin -Password (ConvertTo-SecureString -AsPlainText $newPassword -Force) -PasswordNeverExpires:$true
+            Write-Host "Local administrator account '$LocalAdmin' created with password: $newPassword"
+        } else {
+            # If the account exists, reset the password to a new random one
+            $existingAccount | Set-LocalUser -Password (ConvertTo-SecureString -AsPlainText $newPassword -Force)
+            Write-Host "Password for local administrator account '$LocalAdmin' reset to: $newPassword"
+        }
+
+        # Get the current date and time
+        $now = Get-Date
+
+        # Calculate the expiration date as 60 days from now
+        $expirationDate = $now.AddDays(60)
+
+        # Set the account expiration date
+        $existingAccount | Set-LocalUser -AccountExpires $expirationDate
+
+        Write-Host "Local administrator account '$LocalAdmin' set to expire on: $expirationDate"
+
+        # Add the user to the Administrators group
+        Add-LocalGroupMember -Group "Administrators" -Member $LocalAdmin
+
+        Write-Host "Local administrator account '$LocalAdmin' added to the Administrators group"
     } else {
-        # If the account exists, reset the password to a new random one
-        $existingAccount | Set-LocalUser -Password (ConvertTo-SecureString -AsPlainText $newPassword -Force)
-        Write-Host "Password for local administrator account '$LocalAdmin' reset to: $newPassword"
+        # If a domain controller, skip local administrator account creation and display a message
+        Write-Host "Skipping local administrator account creation and built-in administrator account disabling as the current machine is a domain controller."
     }
-
-    # Get the current date and time
-    $now = Get-Date
-
-    # Calculate the expiration date as 60 days from now
-    $expirationDate = $now.AddDays(60)
-
-    # Set the account expiration date
-    $existingAccount | Set-LocalUser -AccountExpires $expirationDate
-
-    Write-Host "Local administrator account '$LocalAdmin' set to expire on: $expirationDate"
-
-    # Add the user to the Administrators group
-    Add-LocalGroupMember -Group "Administrators" -Member $LocalAdmin
-
-    Write-Host "Local administrator account '$LocalAdmin' added to the Administrators group"
 
     # Check if the built-in Administrator account exists
     $builtInAdmin = Get-LocalUser -Name "Administrator" -ErrorAction SilentlyContinue
