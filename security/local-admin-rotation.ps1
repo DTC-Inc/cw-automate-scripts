@@ -1,4 +1,4 @@
-# VARIABLE SET IN LT EXECUTE SCRIPT BLOCK
+## VARIABLE SET IN LT EXECUTE SCRIPT BLOCK ##
 # Define the local administrator username
 # $localAdmin = '@myLocalAdmin@'
 
@@ -7,6 +7,8 @@
 
 # Define new password
 # $newPassword = '%randompassword%'
+
+## VARIABLE SET IN LT EXECUTE SCRIPT BLOCK ##
 
 # Create the log file directory if it doesn't exist
 $LogDirectory = Split-Path $LogFilePath
