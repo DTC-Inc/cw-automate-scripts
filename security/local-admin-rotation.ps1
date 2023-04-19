@@ -56,7 +56,7 @@ try {
 
     if ($builtInAdmin -ne $null) {
         # If the built-in Administrator account exists, disable it
-        $builtInAdmin | Set-LocalUser -Enabled:$false
+        $builtInAdmin | Disable-LocalUser
 
         Write-Host "Built-in Administrator account disabled"
     }
