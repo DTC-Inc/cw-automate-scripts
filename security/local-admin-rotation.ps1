@@ -2,7 +2,7 @@
 $localAdmin = "@myLocalAdmin@"
 
 # Define the log file path
-$logFilePath = "@myLogFilePath@"
+$logFilePath = "%ltsvcdir%\logs\local-admin-rotate.log"
 
 # Define new password
 $newPassword = "%randompassword%"
