@@ -25,6 +25,13 @@ if (!(Test-Path -Path $LogFilePath)) {
 Start-Transcript -Path $LogFilePath
 
 try {
+    # Check if the current machine is running Server 2016 or newer
+    $osVersion = [System.Environment]::OSVersion.Version
+    if ($osVersion.Major -lt 10 -or ($osVersion.Major -eq 10 -and $osVersion.Minor -lt 0)) {
+        Write-Host "This script is only supported on Server 2016 or newer. Exiting."
+        Exit
+    }
+
     # Check if the current machine is a domain controller
     $isDomainController = (Get-WmiObject -Query "Select DomainRole from Win32_ComputerSystem").DomainRole -eq 4
 
