@@ -8,6 +8,6 @@ Remove-Item $pwsvrdir\* -recurse
 Copy-Item "C:\pwsvrbackup\*" $pwsvrdir
 # Set full path to pwsvr.exe as a variable
 $pwsvrexe = "PWSvr.exe"
-$PWSvrPathexe = $pwsvrdir $pwsvrexe
+$PWSvrPathexe = $pwsvrdir + "\" + $pwsvrexe
 # Start the pwsvr.exe
 Start-Process $PWSvrPathexe
