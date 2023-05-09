@@ -6,8 +6,3 @@ $pwsvrdir = get-itempropertyvalue -path 'HKLM:\Software\wow6432Node\PWInc\PWSvr\
 Remove-Item $pwsvrdir\* -recurse
 # Copy files from backup folder to production folder
 Copy-Item "C:\pwsvrbackup\*" $pwsvrdir
-# Set full path to pwsvr.exe as a variable
-$pwsvrexe = "PWSvr.exe"
-$PWSvrPathexe = $pwsvrdir + "\" + $pwsvrexe
-# Start the pwsvr.exe
-Start-Process $PWSvrPathexe
