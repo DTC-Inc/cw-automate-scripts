@@ -18,3 +18,7 @@ if (Test-Path $downloadLocation) {
 } else {
     Write-Host "Download failed. Please check the URL and try again."
 }
+
+# Create DiskInfo.txt file
+$filepath = "C:\CrystalDiskInfo\DiskInfo.txt"
+New-Item -PATH $filepath -ItemType File
